@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ParcelPoint Admin - Create Parcel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100">
+  <nav class="bg-white p-4 shadow flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-700">ParcelPoint Admin</h1>
+    <div class="space-x-4">
+      <a href="index.html" class="hover:text-blue-500">Dashboard</a>
+      <a href="create.html" class="text-blue-700 font-medium">Create Parcel</a>
+      <a href="support.html" class="hover:text-blue-500">Customer Support</a>
+    </div>
+  </nav>
+
+  <main class="p-6 max-w-4xl mx-auto bg-white shadow rounded">
+    <h2 class="text-2xl font-bold mb-6">📦 New Parcel Details</h2>
+    <form id="parcel-form" class="space-y-6">
+      <div>
+        <label for="trackingNumber" class="block font-semibold mb-1">Tracking Number</label>
+        <input id="trackingNumber" type="text" required class="w-full p-3 border rounded" placeholder="e.g. PP123456789" />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold mb-2">Sender Info</h3>
+          <input id="senderName" type="text" required class="w-full p-2 border mb-2 rounded" placeholder="Full Name" />
+          <input id="senderAddress" type="text" required class="w-full p-2 border mb-2 rounded" placeholder="Address" />
+          <input id="senderEmail" type="email" required class="w-full p-2 border mb-2 rounded" placeholder="Email" />
+          <input id="senderPhone" type="tel" required class="w-full p-2 border rounded" placeholder="Phone" />
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Receiver Info</h3>
+          <input id="receiverName" type="text" required class="w-full p-2 border mb-2 rounded" placeholder="Full Name" />
+          <input id="receiverAddress" type="text" required class="w-full p-2 border mb-2 rounded" placeholder="Address" />
+          <input id="receiverEmail" type="email" required class="w-full p-2 border mb-2 rounded" placeholder="Email" />
+          <input id="receiverPhone" type="tel" required class="w-full p-2 border rounded" placeholder="Phone" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <input id="fromLocation" type="text" required class="p-3 border rounded" placeholder="From (City, Country)" />
+        <input id="toLocation" type="text" required class="p-3 border rounded" placeholder="To (City, Country)" />
+        <select id="status" required class="p-3 border rounded">
+          <option value="" disabled selected>Status</option>
+          <option value="In Transit">In Transit</option>
+          <option value="Delivered">Delivered</option>
+          <option value="On Hold">On Hold</option>
+        </select>
+      </div>
+
+      <button type="submit" class="bg-blue-700 text-white px-6 py-3 rounded hover:bg-blue-800 transition">Submit Parcel</button>
+    </form>
+  </main>
+
+  <script>
+    // On submit, save parcel to localStorage and alert success
+    document.getElementById('parcel-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const newParcel = {
+        trackingNumber: document.getElementById('trackingNumber').value.trim(),
+        senderName: document.getElementById('senderName').value.trim(),
+        senderAddress: document.getElementById('senderAddress').value.trim(),
+        senderEmail: document.getElementById('senderEmail').value.trim(),
+        senderPhone: document.getElementById('senderPhone').value.trim(),
+        receiverName: document.getElementById('receiverName').value.trim(),
+        receiverAddress: document.getElementById('receiverAddress').value.trim(),
+        receiverEmail: document.getElementById('receiverEmail').value.trim(),
+        receiverPhone: document.getElementById('receiverPhone').value.trim(),
+        fromLocation: document.getElementById('fromLocation').value.trim(),
+        toLocation: document.getElementById('toLocation').value.trim(),
+        status: document.getElementById('status').value,
+      };
+
+      let parcels = JSON.parse(localStorage.getItem('parcels')) || [];
+
+      // Prevent duplicate tracking number
+      if(parcels.some(p => p.trackingNumber === newParcel.trackingNumber)) {
+        alert('Tracking Number already exists. Use a unique one.');
+        return;
+      }
+
+      parcels.push(newParcel);
+      localStorage.setItem('parcels', JSON.stringify(parcels));
+      alert('Parcel added successfully!');
+
+      // Reset form
+      this.reset();
+    });
+  </script>
+</body>
+</html>
