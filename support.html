@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ParcelPoint Admin - Customer Support</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100">
+  <nav class="bg-white p-4 shadow flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-700">ParcelPoint Admin</h1>
+    <div class="space-x-4">
+      <a href="index.html" class="hover:text-blue-500">Dashboard</a>
+      <a href="create.html" class="hover:text-blue-500">Create Parcel</a>
+      <a href="support.html" class="text-blue-700 font-medium">Customer Support</a>
+    </div>
+  </nav>
+
+  <main class="p-6 max-w-4xl mx-auto bg-white shadow rounded flex flex-col h-[80vh]">
+    <h2 class="text-2xl font-bold mb-4">💬 Customer Support Chat</h2>
+    
+    <div id="chat-window" class="flex-1 overflow-auto p-4 border rounded bg-gray-50 mb-4">
+      <!-- Messages will appear here -->
+    </div>
+
+    <form id="chat-form" class="flex space-x-4">
+      <input id="admin-message" type="text" placeholder="Type your reply..." class="flex-grow p-3 border rounded" required />
+      <button type="submit" class="bg-blue-700 text-white px-6 rounded hover:bg-blue-800 transition">Send</button>
+    </form>
+  </main>
+
+  <script>
+    // Simulated messages from users
+    let messages = JSON.parse(localStorage.getItem('supportMessages')) || [
+      {from: 'user', text: 'Hello, where is my parcel? Tracking #PP123456789', timestamp: Date.now() - 600000},
+      {from: 'admin', text: 'Hi! Let me check that for you.', timestamp: Date.now() - 590000},
+    ];
+
+    const chatWindow = document.getElementById('chat-window');
+    const chatForm = document.getElementById('chat-form');
+    const adminMessageInput = document.getElementById('admin-message');
+
+    function renderMessages() {
+      chatWindow.innerHTML = '';
+      messages.forEach(msg => {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('mb-3', 'max-w-[70%]', 'px-4', 'py-2', 'rounded');
+
+        if(msg.from === 'admin') {
+          msgDiv.classList.add('bg-blue-600', 'text-white', 'ml-auto');
+        } else {
+          msgDiv.classList.add('bg-gray-300', 'text-black', 'mr-auto');
+        }
+
+        msgDiv.textContent = msg.text;
+        chatWindow.appendChild(msgDiv);
+      });
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    // Initial render
+    renderMessages();
+
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = adminMessageInput.value.trim();
+      if(!text) return;
+
+      messages.push({from: 'admin', text, timestamp: Date.now()});
+      localStorage.setItem('supportMessages', JSON.stringify(messages));
+      adminMessageInput.value = '';
+      renderMessages();
+    });
+  </script>
+</body>
+</html>
